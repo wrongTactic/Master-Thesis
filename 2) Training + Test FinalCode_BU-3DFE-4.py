@@ -12,6 +12,7 @@ from vit_keras import vit
 from sklearn.utils import shuffle
 from sklearn.metrics import classification_report, confusion_matrix
 import os
+from utils_.utils import arguments_parsing
 
 
 #vedere la batch size
@@ -135,7 +136,8 @@ def get_model2D(width=224, height=224):  # ho ridotto dimensione da 224 a 112, m
 
 
 if __name__ == "__main__":
-
+    #take the arguments as input in order to run the code
+    arguments = arguments_parsing()
     gpus = tf.config.list_physical_devices('GPU')
     if gpus:
         try:
@@ -162,10 +164,10 @@ if __name__ == "__main__":
 
     classes = ['Anger', 'Disgust', 'Fear', 'Happy', 'Sadness', 'Surprise']  #, 'Neutral']
 
-    input_3D_train = '..\\Dataset\\Articolo\\BU-3DFE-4\\Training\\'
-    input_3D_test = '..\\Dataset\\Articolo\\BU-3DFE-4\\Validation\\'
+    input_3D_train = arguments.train
+    input_3D_test = arguments.test
 
-    input_BU_2D = '..\\Dataset\\BU-3DFE\\2D\\Emotion\\'
+    input_BU_2D = arguments.BU
 
     for clas in range(len(classes)):
         x_dict = np.load(input_3D_train + 'X_train_BU-3DFE-4_56_{}.npz'.format(classes[clas]))
