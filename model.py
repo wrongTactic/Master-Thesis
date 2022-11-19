@@ -41,8 +41,9 @@ def build_model(double, _2d, _3d, verbose, classes):
         final = Dropout(0.5)(final)
         final = BatchNormalization()(final)
         final = Dense(units=len(classes), activation="softmax")(final)
-
-        model = Model(inputs=[model3D.input].append(model2D.input), outputs=final)
+        inputs_models = [model3D.input]
+        inputs_models.append(model2D.input)
+        model = Model(inputs=inputs_models, outputs=final)
 
     elif _2d:
         final = Dropout(0.5)(model2D.output)
