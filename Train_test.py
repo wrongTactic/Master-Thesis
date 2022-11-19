@@ -156,10 +156,10 @@ def define_callbacks():
 if __name__ == "__main__":
     #take the arguments as input in order to run the code
     parser = argparse.ArgumentParser()
-    parser.add_argument("--train", help = "path to the training dataset Bosphorus")
-    parser.add_argument("--test", help = "path to the test dataset Bosphorus")
-    parser.add_argument("--BU", help = "")
-    parser.add_argument("-t", "--train", help = "if passed activates the training of the model, true default", action="store_true")
+    parser.add_argument("train_set", help = "path to the training dataset Bosphorus")
+    parser.add_argument("test_set", help = "path to the test dataset Bosphorus")
+    parser.add_argument("BU_set", help = "")
+    parser.add_argument('--train', nargs='?', const=True, type=bool,help = "if passed activates the training of the model, true default")
     arguments = parser.parse_args()
     gpus = tf.config.list_physical_devices('GPU')
     if gpus:
