@@ -3,6 +3,9 @@ from tensorflow.python.keras.layers import Dropout, Input, GlobalAveragePooling3
 from tensorflow.keras.layers import BatchNormalization
 from tensorflow.keras.applications.resnet50 import ResNet50, preprocess_input
 from tensorflow.python.keras.models import Model
+import tensorflow as tf
+
+tf.compat.v1.disable_eager_execution()
 
 
 def build_model(double, _2d, _3d, verbose, classes):
@@ -39,7 +42,7 @@ def build_model(double, _2d, _3d, verbose, classes):
         final = BatchNormalization()(final)
         final = Dense(units=len(classes), activation="softmax")(final)
 
-        model = Model(inputs=[model3D.input, model2D.input], outputs=final)
+        model = Model(inputs=[model3D.input].append(model2D.input), outputs=final)
 
     elif _2d:
         final = Dropout(0.5)(model2D.output)

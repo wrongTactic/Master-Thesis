@@ -16,6 +16,7 @@ import os
 import argparse
 import model
 
+
 #vedere la batch size
 
 def relu_bn(inputs):
@@ -159,6 +160,7 @@ def define_callbacks(name, arguments):
 
 
 if __name__ == "__main__":
+    #TODO add neptune
     #take the arguments as input in order to run the code
     parser = argparse.ArgumentParser()
     parser.add_argument("train_set", help = "Path to the training dataset ")
@@ -170,6 +172,9 @@ if __name__ == "__main__":
     parser.add_argument("--model_name",help = "The saving name of the trained model in .h5 extension (do not add the extension). Used only when the train hyperparameter is True")
     arguments = parser.parse_args()
     gpus = tf.config.list_physical_devices('GPU')
+
+    tf.compat.v1.disable_eager_execution()
+
     if gpus:
         try:
             # Currently, memory growth needs to be the same across GPUs
