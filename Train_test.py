@@ -239,7 +239,7 @@ if __name__ == "__main__":
     Z_val2D = []
 
     for i, str in enumerate(Z_train3D):
-
+        #TODO pulire questo schifo
         # BU
         if str[6:8] == 'AN':
             new_str = str.split('xyz_rgb.txt')
@@ -311,6 +311,8 @@ if __name__ == "__main__":
             new_str = str.split('xyz_rgb.txt')
             new_str = new_str[0] + 'F2D.png'
             orig_img = cv2.imread(input_BU_2D + 'Neutral\\{}'.format(new_str))
+            if orig_img is None:
+                print('Wrong path:', input_BU_2D + 'Neutral\\{}'.format(new_str))
             # orig_img = preprocess_input(orig_img)
             orig_img = cv2.resize(orig_img, (224, 224))
             # orig_img = orig_img / 255.0
