@@ -159,7 +159,7 @@ if __name__ == "__main__":
     parser.add_argument("train_set", help = "path to the training dataset Bosphorus")
     parser.add_argument("test_set", help = "path to the test dataset Bosphorus")
     parser.add_argument("BU_set", help = "")
-    parser.add_argument('train', nargs=1, const=True, type=bool,help = "if passed activates the training of the model, true default")
+    parser.add_argument('train', nargs=1, default=True, type=bool,help = "if passed activates the training of the model, true default")
     arguments = parser.parse_args()
     gpus = tf.config.list_physical_devices('GPU')
     if gpus:
@@ -187,10 +187,10 @@ if __name__ == "__main__":
 
     classes = ['Anger', 'Disgust', 'Fear', 'Happy', 'Sadness', 'Surprise']  #, 'Neutral']
 
-    input_3D_train = arguments.train
-    input_3D_test = arguments.test
+    input_3D_train = arguments.train_set
+    input_3D_test = arguments.test_set
 
-    input_BU_2D = arguments.BU
+    input_BU_2D = arguments.BU_set
 
     for clas in range(len(classes)):
         x_dict = np.load(input_3D_train + 'X_train_BU-3DFE-4_56_{}.npz'.format(classes[clas]))
