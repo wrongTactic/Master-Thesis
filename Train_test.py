@@ -135,16 +135,20 @@ def get_model2D(width=224, height=224):  # ho ridotto dimensione da 224 a 112, m
     model = Model(inputs, x, name="2D-CNN")
     return model
 
-def define_callbacks():
+
+def define_callbacks(name, arguments):
     # Define callbacks.
 
     reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_acc', factor=0.2, patience=10, verbose=1,
                                                      min_delta=1e-4, min_lr=1e-6, mode='max')
-
-    DirLog = "..\\Results\\Logs\\{}".format(name)
+    #model.save('..\\Results\\Models\\{}.h5'.format(name))
+    #model.save(arguments.saving_path + "/" + arguments.model_name + ".h5")
+    DirLog = arguments.saving_path + "/Logs/" + arguments.model_name
+    #DirLog = "..\\Results\\Logs\\{}".format(name)
     tb_callback = tf.keras.callbacks.TensorBoard(log_dir=DirLog, histogram_freq=1)  # update_freq='batch'
 
-    best_model_path = '..\\Results\\Models\\{}-bm.h5'.format(name)
+    best_model_path = arguments.saving_path + "/BestModel_" +arguments.model_name +".h5"
+    #best_model_path = '..\\Results\\Models\\{}-bm.h5'.format(name)
     checkpoint_cb = tf.keras.callbacks.ModelCheckpoint(best_model_path, monitor="val_acc", save_best_only=True,
                                                        verbose=1)
 
@@ -153,13 +157,17 @@ def define_callbacks():
     callbacks_list = [tb_callback, checkpoint_cb, early_stopping_cb, reduce_lr]
     return callbacks_list
 
+
 if __name__ == "__main__":
     #take the arguments as input in order to run the code
     parser = argparse.ArgumentParser()
-    parser.add_argument("train_set", help = "path to the training dataset Bosphorus")
-    parser.add_argument("test_set", help = "path to the test dataset Bosphorus")
+    parser.add_argument("train_set", help = "Path to the training dataset ")
+    parser.add_argument("test_set", help = "Path to the test dataset ")
     parser.add_argument("BU_set", help = "")
-    parser.add_argument('train', nargs=1, default=True, type=bool,help = "if passed activates the training of the model, true default")
+    parser.add_argument('train', nargs=1, default=True, type=bool,help = "If passed activates the training of the model, true default")
+    parser.add_argument("--saving_path", help = "The saving path of the trained model in .h5 extension. Used only when the train hyperparameter is True")
+    parser.add_argument("--model_path", help = "To provide the path of the already trained model in .h5 format. Used only when train hyperparameter is False")
+    parser.add_argument("--model_name",help = "The saving name of the trained model in .h5 extension (do not add the extension). Used only when the train hyperparameter is True")
     arguments = parser.parse_args()
     gpus = tf.config.list_physical_devices('GPU')
     if gpus:
@@ -238,6 +246,7 @@ if __name__ == "__main__":
     Z_train2D = []
     Z_val2D = []
 
+
     for i, str in enumerate(Z_train3D):
         # BU
         new_str = str.split('xyz_rgb.txt')
@@ -273,82 +282,35 @@ if __name__ == "__main__":
     for i, str in enumerate(Z_val3D):
 
         # BU
+        new_str = str.split('xyz_rgb.txt')
+        new_str = new_str[0] + 'F2D.png'
         if str[6:8] == 'AN':
-            new_str = str.split('xyz_rgb.txt')
-            new_str = new_str[0] + 'F2D.png'
-            orig_img = cv2.imread(input_BU_2D + 'Anger\\{}'.format(new_str))
-            # orig_img = preprocess_input(orig_img)
-            orig_img = cv2.resize(orig_img, (224, 224))
-            # orig_img = orig_img / 255.0
-            X_val2D.append(orig_img)
-            Z_val2D.append(new_str)
-            continue
+            orig_img = cv2.imread(input_BU_2D + '/Anger/{}'.format(new_str))
 
         elif str[6:8] == 'DI':
-            new_str = str.split('xyz_rgb.txt')
-            new_str = new_str[0] + 'F2D.png'
-            orig_img = cv2.imread(input_BU_2D + 'Disgust\\{}'.format(new_str))
-            # orig_img = preprocess_input(orig_img)
-            orig_img = cv2.resize(orig_img, (224, 224))
-            # orig_img = orig_img / 255.0
-            X_val2D.append(orig_img)
-            Z_val2D.append(new_str)
-            continue
+            orig_img = cv2.imread(input_BU_2D + '/Disgust/{}'.format(new_str))
 
         elif str[6:8] == 'FE':
-            new_str = str.split('xyz_rgb.txt')
-            new_str = new_str[0] + 'F2D.png'
-            orig_img = cv2.imread(input_BU_2D + 'Fear\\{}'.format(new_str))
-            # orig_img = preprocess_input(orig_img)
-            orig_img = cv2.resize(orig_img, (224, 224))
-            # orig_img = orig_img / 255.0
-            X_val2D.append(orig_img)
-            Z_val2D.append(new_str)
-            continue
+            orig_img = cv2.imread(input_BU_2D + '/Fear/{}'.format(new_str))
 
         elif str[6:8] == 'HA':
-            new_str = str.split('xyz_rgb.txt')
-            new_str = new_str[0] + 'F2D.png'
-            orig_img = cv2.imread(input_BU_2D + 'Happy\\{}'.format(new_str))
-            # orig_img = preprocess_input(orig_img)
-            orig_img = cv2.resize(orig_img, (224, 224))
-            # orig_img = orig_img / 255.0
-            X_val2D.append(orig_img)
-            Z_val2D.append(new_str)
-            continue
+            orig_img = cv2.imread(input_BU_2D + '/Happy/{}'.format(new_str))
 
         elif str[6:8] == 'SA':
-            new_str = str.split('xyz_rgb.txt')
-            new_str = new_str[0] + 'F2D.png'
-            orig_img = cv2.imread(input_BU_2D + 'Sadness\\{}'.format(new_str))
-            # orig_img = preprocess_input(orig_img)
-            orig_img = cv2.resize(orig_img, (224, 224))
-            # orig_img = orig_img / 255.0
-            X_val2D.append(orig_img)
-            Z_val2D.append(new_str)
-            continue
+            orig_img = cv2.imread(input_BU_2D + '/Sadness/{}'.format(new_str))
 
         elif str[6:8] == 'SU':
-            new_str = str.split('xyz_rgb.txt')
-            new_str = new_str[0] + 'F2D.png'
-            orig_img = cv2.imread(input_BU_2D + 'Surprise\\{}'.format(new_str))
-            # orig_img = preprocess_input(orig_img)
-            orig_img = cv2.resize(orig_img, (224, 224))
-            # orig_img = orig_img / 255.0
-            X_val2D.append(orig_img)
-            Z_val2D.append(new_str)
-            continue
+            orig_img = cv2.imread(input_BU_2D + '/Surprise/{}'.format(new_str))
 
         elif str[6:8] == 'NE':
-            new_str = str.split('xyz_rgb.txt')
-            new_str = new_str[0] + 'F2D.png'
-            orig_img = cv2.imread(input_BU_2D + 'Neutral\\{}'.format(new_str))
-            # orig_img = preprocess_input(orig_img)
-            orig_img = cv2.resize(orig_img, (224, 224))
-            # orig_img = orig_img / 255.0
-            X_val2D.append(orig_img)
-            Z_val2D.append(new_str)
-            continue
+            orig_img = cv2.imread(input_BU_2D + '/Neutral/{}'.format(new_str))
+
+        # orig_img = preprocess_input(orig_img)
+        orig_img = cv2.resize(orig_img, (224, 224))
+        # orig_img = orig_img / 255.0
+        X_val2D.append(orig_img)
+        Z_val2D.append(new_str)
+        continue
 
 
 
@@ -371,7 +333,8 @@ if __name__ == "__main__":
     _3d = False
     verbose = True
     #saving name of the trained model
-    name = 'Final-BU-3DFE-4_3D+2D_b32_pretrain_lr0.0001-bm'
+    if train :
+        name = arguments.model_name
 
 
     #instantiate the model architecture
@@ -391,7 +354,7 @@ if __name__ == "__main__":
     )
 
     # Define callbacks.
-    callbacks_list = define_callbacks
+    callbacks_list = define_callbacks(name, arguments.saving_path)
 
     # Train the model, doing validation at the end of each epoch
     if train:
@@ -408,11 +371,17 @@ if __name__ == "__main__":
 
         # model.fit(x=X_train2D, y=Y_train3D, validation_data=(X_val2D, Y_val3D), epochs=epochs,
         #           batch_size=batch_size, callbacks=callbacks_list, shuffle=True)  # batch_size=8 , shuffle=True
-        model.save('..\\Results\\Models\\{}.h5'.format(name))
+        model.save(arguments.saving_path + "/" + arguments.model_name + ".h5" )
 
     else:
-        model.load_weights("E:\\Multimodal\\Results\\Models\\Final-BU-3DFE-4_3D+2D_ResNet_avg_lr0.0001-bm.h5")
+        try:
+            model.load_weights(arguments.model_path)
+        except:
+            print("Problem loading the model which was provided with the model_path parameter")
 
+
+
+    #Evaluation of the model
     if _2d:
         print(model.evaluate(x=X_val2D, y=Y_val3D, batch_size=8))
 
