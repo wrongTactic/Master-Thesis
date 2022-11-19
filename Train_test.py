@@ -14,6 +14,7 @@ from sklearn.utils import shuffle
 from sklearn.metrics import classification_report, confusion_matrix
 import os
 import argparse
+import model
 
 #vedere la batch size
 
@@ -134,13 +135,31 @@ def get_model2D(width=224, height=224):  # ho ridotto dimensione da 224 a 112, m
     model = Model(inputs, x, name="2D-CNN")
     return model
 
+def define_callbacks():
+    # Define callbacks.
+
+    reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_acc', factor=0.2, patience=10, verbose=1,
+                                                     min_delta=1e-4, min_lr=1e-6, mode='max')
+
+    DirLog = "..\\Results\\Logs\\{}".format(name)
+    tb_callback = tf.keras.callbacks.TensorBoard(log_dir=DirLog, histogram_freq=1)  # update_freq='batch'
+
+    best_model_path = '..\\Results\\Models\\{}-bm.h5'.format(name)
+    checkpoint_cb = tf.keras.callbacks.ModelCheckpoint(best_model_path, monitor="val_acc", save_best_only=True,
+                                                       verbose=1)
+
+    early_stopping_cb = tf.keras.callbacks.EarlyStopping(monitor="val_acc", patience=20)
+
+    callbacks_list = [tb_callback, checkpoint_cb, early_stopping_cb, reduce_lr]
+    return callbacks_list
 
 if __name__ == "__main__":
     #take the arguments as input in order to run the code
     parser = argparse.ArgumentParser()
-    parser.add_argument("train", help = "")
-    parser.add_argument("test", help = "")
-    parser.add("BU", help = "")
+    parser.add_argument("--train", help = "path to the training dataset Bosphorus")
+    parser.add_argument("--test", help = "path to the test dataset Bosphorus")
+    parser.add_argument("--BU", help = "")
+    parser.add_argument("-t", "--train", help = "if passed activates the training of the model, true default", action="store_true")
     arguments = parser.parse_args()
     gpus = tf.config.list_physical_devices('GPU')
     if gpus:
@@ -213,10 +232,6 @@ if __name__ == "__main__":
 
     X_train3D, Y_train3D, Z_train3D = shuffle(X_train3D, Y_train3D, Z_train3D)
 
-    # # divido 80-20 train-valid
-    # X_train3D, X_val3D, Y_train3D, Y_val3D, Z_train3D, Z_val3D = train_test_split(all_images, y_train, all_names,
-    #                                                                               test_size=0.2, random_state=42,
-    #                                                                               shuffle=True)
 
     X_train2D = []
     X_val2D = []
@@ -383,9 +398,7 @@ if __name__ == "__main__":
             Z_val2D.append(new_str)
             continue
 
-    # for img in X_val2D:
-    #     cv2.imshow("a", img)
-    #     cv2.waitKey()
+
 
 
     X_train2D = np.asarray(X_train2D)
@@ -396,66 +409,22 @@ if __name__ == "__main__":
     X_val2D = preprocess_input(X_val2D)
     Z_val2D = np.asarray(Z_val2D)
 
-    # Visualize an augmented CT scan.
-    # data = train_dataset3D.take(1)
-    # images, labels = list(data)[0]
-    # images = images.numpy()
-    # image = images[0]
-    # print("Dimension of the CT scan is:", image.shape)
-
-    # plt.imshow(np.squeeze(cv2.cvtColor(image[:, 48, :], cv2.COLOR_BGR2RGB)))
 
     # Keras
     # Build model.
 
-    train = False
+    train = arguments.train
     double = True #2D + 3D
     _2d = False
     _3d = False
-    #nome salvataggio rete
+    verbose = True
+    #saving name of the trained model
     name = 'Final-BU-3DFE-4_3D+2D_b32_pretrain_lr0.0001-bm'
 
-    model3D = get_model3D(width=112, height=112, depth=56)
-    model2D = ResNet50(weights='imagenet', include_top=False, input_shape=(224, 224, 3), pooling='avg')
-    # model2D = vit.vit_b32(
-    #     image_size=224,
-    #     activation='sigmoid',
-    #     pretrained=True,
-    #     include_top=False,
-    #     pretrained_top=False
-    # )
-    # model2D = vit.vit_b16(
-    #     image_size=224,
-    #     # activation='sigmoid',
-    #     pretrained=True,
-    #     include_top=False,
-    #     pretrained_top=False
-    # )
-    # GA = Dense(units=256, activation="relu")(model2D.output)
-    # model2D = Model(inputs=model2D.input, outputs=GA)
 
-    if double:
-        final = concatenate([model3D.output, model2D.output])
-        # final = Dense(units=512, activation="relu")(final)
-        final = Dropout(0.5)(final)
-        final = BatchNormalization()(final)
-        final = Dense(units=len(classes), activation="softmax")(final)
+    #instantiate the model architecture
+    model_architecture = model.build_model(double, _2d, _3d, verbose, classes)
 
-        model = Model(inputs=[model3D.input, model2D.input], outputs=final)
-
-    elif _2d:
-        final = Dropout(0.5)(model2D.output)
-        final = BatchNormalization()(final)
-        final = Dense(units=len(classes), activation="softmax")(final)
-        model = Model(inputs=[model2D.input], outputs=final)
-
-    elif _3d:
-        final = Dropout(0.5)(model3D.output)
-        final = BatchNormalization()(final)
-        final = Dense(units=len(classes), activation="softmax")(final)
-        model = Model(inputs=[model3D.input], outputs=final)
-
-    model.summary()
 
     # Compile model.
     batch_size = 8  # 8 con b16 e b32
@@ -463,25 +432,14 @@ if __name__ == "__main__":
     initial_learning_rate = 0.0001
     optimizer = tf.keras.optimizers.Adam(learning_rate=initial_learning_rate)
 
-    model.compile(
+    model_architecture.compile(
         loss="categorical_crossentropy",
         optimizer=optimizer,
         metrics=["acc"],
     )
 
     # Define callbacks.
-
-    reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_acc', factor=0.2, patience=10, verbose=1, min_delta=1e-4, min_lr=1e-6, mode='max')
-
-    DirLog = "..\\Results\\Logs\\{}".format(name)
-    tb_callback = tf.keras.callbacks.TensorBoard(log_dir=DirLog, histogram_freq=1)  # update_freq='batch'
-
-    best_model_path = '..\\Results\\Models\\{}-bm.h5'.format(name)
-    checkpoint_cb = tf.keras.callbacks.ModelCheckpoint(best_model_path, monitor="val_acc", save_best_only=True, verbose=1)
-
-    early_stopping_cb = tf.keras.callbacks.EarlyStopping(monitor="val_acc", patience=20)
-
-    callbacks_list = [tb_callback, checkpoint_cb, early_stopping_cb, reduce_lr]
+    callbacks_list = define_callbacks
 
     # Train the model, doing validation at the end of each epoch
     if train:
