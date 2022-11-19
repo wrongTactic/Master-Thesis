@@ -239,86 +239,36 @@ if __name__ == "__main__":
     Z_val2D = []
 
     for i, str in enumerate(Z_train3D):
-        #TODO pulire questo schifo
         # BU
+        new_str = str.split('xyz_rgb.txt')
+        new_str = new_str[0] + 'F2D.png'
         if str[6:8] == 'AN':
-            new_str = str.split('xyz_rgb.txt')
-            new_str = new_str[0] + 'F2D.png'
-            orig_img = cv2.imread(input_BU_2D + 'Anger\\{}'.format(new_str))
-            # orig_img = preprocess_input(orig_img)
-            orig_img = cv2.resize(orig_img, (224, 224))
-            # orig_img = orig_img / 255.0
-            X_train2D.append(orig_img)
-            Z_train2D.append(new_str)
-            continue
+            orig_img = cv2.imread(input_BU_2D +'/Anger/{}'.format(new_str))
 
         elif str[6:8] == 'DI':
-            new_str = str.split('xyz_rgb.txt')
-            new_str = new_str[0] + 'F2D.png'
-            orig_img = cv2.imread(input_BU_2D + 'Disgust\\{}'.format(new_str))
-            # orig_img = preprocess_input(orig_img)
-            orig_img = cv2.resize(orig_img, (224, 224))
-            # orig_img = orig_img / 255.0
-            X_train2D.append(orig_img)
-            Z_train2D.append(new_str)
-            continue
+            orig_img = cv2.imread(input_BU_2D + '/Disgust/{}'.format(new_str))
 
         elif str[6:8] == 'FE':
-            new_str = str.split('xyz_rgb.txt')
-            new_str = new_str[0] + 'F2D.png'
-            orig_img = cv2.imread(input_BU_2D + 'Fear\\{}'.format(new_str))
-            # orig_img = preprocess_input(orig_img)
-            orig_img = cv2.resize(orig_img, (224, 224))
-            # orig_img = orig_img / 255.0
-            X_train2D.append(orig_img)
-            Z_train2D.append(new_str)
-            continue
+            orig_img = cv2.imread(input_BU_2D + '/Fear/{}'.format(new_str))
 
         elif str[6:8] == 'HA':
-            new_str = str.split('xyz_rgb.txt')
-            new_str = new_str[0] + 'F2D.png'
-            orig_img = cv2.imread(input_BU_2D + 'Happy\\{}'.format(new_str))
-            # orig_img = preprocess_input(orig_img)
-            orig_img = cv2.resize(orig_img, (224, 224))
-            # orig_img = orig_img / 255.0
-            X_train2D.append(orig_img)
-            Z_train2D.append(new_str)
-            continue
+            orig_img = cv2.imread(input_BU_2D + '/Happy/{}'.format(new_str))
 
         elif str[6:8] == 'SA':
-            new_str = str.split('xyz_rgb.txt')
-            new_str = new_str[0] + 'F2D.png'
-            orig_img = cv2.imread(input_BU_2D + 'Sadness\\{}'.format(new_str))
-            # orig_img = preprocess_input(orig_img)
-            orig_img = cv2.resize(orig_img, (224, 224))
-            # orig_img = orig_img / 255.0
-            X_train2D.append(orig_img)
-            Z_train2D.append(new_str)
-            continue
+            orig_img = cv2.imread(input_BU_2D + '/Sadness/{}'.format(new_str))
 
         elif str[6:8] == 'SU':
-            new_str = str.split('xyz_rgb.txt')
-            new_str = new_str[0] + 'F2D.png'
-            orig_img = cv2.imread(input_BU_2D + 'Surprise\\{}'.format(new_str))
-            # orig_img = preprocess_input(orig_img)
-            orig_img = cv2.resize(orig_img, (224, 224))
-            # orig_img = orig_img / 255.0
-            X_train2D.append(orig_img)
-            Z_train2D.append(new_str)
-            continue
+            orig_img = cv2.imread(input_BU_2D + '/Surprise/{}'.format(new_str))
 
         elif str[6:8] == 'NE':
-            new_str = str.split('xyz_rgb.txt')
-            new_str = new_str[0] + 'F2D.png'
-            orig_img = cv2.imread(input_BU_2D + 'Neutral\\{}'.format(new_str))
-            if orig_img is None:
-                print('Wrong path:', input_BU_2D + 'Neutral\\{}'.format(new_str))
-            # orig_img = preprocess_input(orig_img)
-            orig_img = cv2.resize(orig_img, (224, 224))
-            # orig_img = orig_img / 255.0
-            X_train2D.append(orig_img)
-            Z_train2D.append(new_str)
-            continue
+            orig_img = cv2.imread(input_BU_2D + '/Neutral/{}'.format(new_str))
+
+        # orig_img = preprocess_input(orig_img)
+        orig_img = cv2.resize(orig_img, (224, 224))
+        # orig_img = orig_img / 255.0
+        X_train2D.append(orig_img)
+        Z_train2D.append(new_str)
+        continue
 
     for i, str in enumerate(Z_val3D):
 
