@@ -13,8 +13,7 @@ from vit_keras import vit
 from sklearn.utils import shuffle
 from sklearn.metrics import classification_report, confusion_matrix
 import os
-from utils_.utils import arguments_parsing
-
+import argparse
 
 #vedere la batch size
 
@@ -138,7 +137,11 @@ def get_model2D(width=224, height=224):  # ho ridotto dimensione da 224 a 112, m
 
 if __name__ == "__main__":
     #take the arguments as input in order to run the code
-    arguments = arguments_parsing()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("train", help = "")
+    parser.add_argument("test", help = "")
+    parser.add("BU", help = "")
+    arguments = parser.parse_args()
     gpus = tf.config.list_physical_devices('GPU')
     if gpus:
         try:
