@@ -18,12 +18,12 @@ def build_model(double, _2d, _3d, verbose, classes):
 
     model3D = get_model3D(width=112, height=112, depth=56)
     model2D = ResNet50(weights='imagenet', include_top=False, input_shape=(224, 224, 3), pooling='avg')
-    model3D.name = "model3D"
-    model2D.name = "model2D"
+    model3D._name = "model3D"
+    model2D._name = "model2D"
     for l in model3D.layers:
-        l.name = l.name + model3D.name
+        l._name = l._name + model3D._name
     for l in model2D.layers:
-        l.name = l.name + model2D.name
+        l._name = l._name + model2D._name
     # model2D = vit.vit_b32(
     #     image_size=224,
     #     activation='sigmoid',
