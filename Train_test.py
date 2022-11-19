@@ -15,7 +15,7 @@ from sklearn.metrics import classification_report, confusion_matrix
 import os
 import argparse
 import model
-from keras.optimizers import adam
+from keras.optimizers import adam_v2
 
 
 #vedere la batch size
@@ -351,7 +351,7 @@ if __name__ == "__main__":
     batch_size = 8  # 8 con b16 e b32
     epochs = 80
     initial_learning_rate = 0.0001
-    optimizer = adam(learning_rate=initial_learning_rate)
+    optimizer = adam_v2.Adam(learning_rate=initial_learning_rate)
 
     model_architecture.compile(
         loss="categorical_crossentropy",
