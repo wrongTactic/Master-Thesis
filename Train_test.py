@@ -159,7 +159,7 @@ if __name__ == "__main__":
     parser.add_argument("train_set", help = "path to the training dataset Bosphorus")
     parser.add_argument("test_set", help = "path to the test dataset Bosphorus")
     parser.add_argument("BU_set", help = "")
-    parser.add_argument('--train', nargs='?', const=True, type=bool,help = "if passed activates the training of the model, true default")
+    parser.add_argument('train', nargs=1, const=True, type=bool,help = "if passed activates the training of the model, true default")
     arguments = parser.parse_args()
     gpus = tf.config.list_physical_devices('GPU')
     if gpus:
