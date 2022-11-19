@@ -193,11 +193,11 @@ if __name__ == "__main__":
     input_BU_2D = arguments.BU_set
 
     for clas in range(len(classes)):
-        x_dict = np.load(input_3D_train + 'X_train_BU-3DFE-4_56_{}.npz'.format(classes[clas]))
+        x_dict = np.load(input_3D_train + "/"+'X_train_BU-3DFE-4_56_{}.npz'.format(classes[clas]))
         X = x_dict['arr_0']
-        y_dict = np.load(input_3D_train + 'Y_train_BU-3DFE-4_56_{}.npz'.format(classes[clas]))
+        y_dict = np.load(input_3D_train + "/"+'Y_train_BU-3DFE-4_56_{}.npz'.format(classes[clas]))
         Y = y_dict['arr_0']
-        z_dict = np.load(input_3D_train + 'Z_train_BU-3DFE-4_56_{}.npz'.format(classes[clas]))
+        z_dict = np.load(input_3D_train + "/"+'Z_train_BU-3DFE-4_56_{}.npz'.format(classes[clas]))
         Z = z_dict['arr_0']
 
         for ii in range(X.shape[0]):
@@ -206,11 +206,11 @@ if __name__ == "__main__":
             Z_train.append(Z[ii])
 
     for clas in range(len(classes)):
-        x_dict = np.load(input_3D_test + 'X_valid_BU-3DFE-4_56_{}.npz'.format(classes[clas]))
+        x_dict = np.load(input_3D_test + "/"+ 'X_valid_BU-3DFE-4_56_{}.npz'.format(classes[clas]))
         X = x_dict['arr_0']
-        y_dict = np.load(input_3D_test + 'Y_valid_BU-3DFE-4_56_{}.npz'.format(classes[clas]))
+        y_dict = np.load(input_3D_test + "/"+'Y_valid_BU-3DFE-4_56_{}.npz'.format(classes[clas]))
         Y = y_dict['arr_0']
-        z_dict = np.load(input_3D_test + 'Z_valid_BU-3DFE-4_56_{}.npz'.format(classes[clas]))
+        z_dict = np.load(input_3D_test + "/"+'Z_valid_BU-3DFE-4_56_{}.npz'.format(classes[clas]))
         Z = z_dict['arr_0']
 
         for ii in range(X.shape[0]):
