@@ -137,7 +137,7 @@ def get_model2D(width=224, height=224):  # ho ridotto dimensione da 224 a 112, m
     return model
 
 
-def define_callbacks(name, arguments):
+def define_callbacks( arguments):
     # Define callbacks.
 
     reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_acc', factor=0.2, patience=10, verbose=1,
@@ -359,7 +359,7 @@ if __name__ == "__main__":
     )
 
     # Define callbacks.
-    callbacks_list = define_callbacks(name, arguments.saving_path)
+    callbacks_list = define_callbacks( arguments)
 
     # Train the model, doing validation at the end of each epoch
     if train:
