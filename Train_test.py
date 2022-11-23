@@ -15,7 +15,6 @@ from sklearn.metrics import classification_report, confusion_matrix
 import os
 import argparse
 import model
-from keras.optimizers import adam_v2
 from tensorflow.keras.optimizers import Adam
 
 #vedere la batch size
