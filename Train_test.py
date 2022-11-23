@@ -1,8 +1,8 @@
-from tensorflow.python.keras.layers import Conv3D, MaxPool3D, Flatten, Dense, ReLU, Add, Conv2D, MaxPool2D, GlobalAveragePooling2D
-from tensorflow.python.keras.layers import Dropout, Input, GlobalAveragePooling3D, concatenate
+from tensorflow.keras.layers import Conv3D, MaxPool3D, Flatten, Dense, ReLU, Add, Conv2D, MaxPool2D, GlobalAveragePooling2D
+from tensorflow.keras.layers import Dropout, Input, GlobalAveragePooling3D, concatenate
 from tensorflow.keras.layers import BatchNormalization
 from tensorflow.keras.applications.resnet50 import ResNet50, preprocess_input
-from tensorflow.python.keras.models import Model
+from tensorflow.keras.models import Model
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.preprocessing import image
 import numpy as np
