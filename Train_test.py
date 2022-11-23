@@ -364,23 +364,23 @@ if __name__ == "__main__":
     # Train the model, doing validation at the end of each epoch
     if train:
         if double:
-            model.fit(x=[X_train3D, X_train2D], y=Y_train3D, validation_data=([X_val3D, X_val2D], Y_val3D), epochs=epochs,
+            model_architecture.fit(x=[X_train3D, X_train2D], y=Y_train3D, validation_data=([X_val3D, X_val2D], Y_val3D), epochs=epochs,
                       batch_size=batch_size, callbacks=callbacks_list, shuffle=False)  # batch_size=8 , shuffle=True
         elif _2d:
-            model.fit(x=X_train2D, y=Y_train3D, validation_data=(X_val2D, Y_val3D), epochs=epochs,
+            model_architecture.fit(x=X_train2D, y=Y_train3D, validation_data=(X_val2D, Y_val3D), epochs=epochs,
                       batch_size=batch_size, callbacks=callbacks_list, shuffle=False)  # batch_size=8 , shuffle=True
 
         elif _3d:
-            model.fit(x=X_train3D, y=Y_train3D, validation_data=(X_val3D, Y_val3D), epochs=epochs,
+            model_architecture.fit(x=X_train3D, y=Y_train3D, validation_data=(X_val3D, Y_val3D), epochs=epochs,
                       batch_size=batch_size, callbacks=callbacks_list, shuffle=False)  # batch_size=8 , shuffle=True
 
         # model.fit(x=X_train2D, y=Y_train3D, validation_data=(X_val2D, Y_val3D), epochs=epochs,
         #           batch_size=batch_size, callbacks=callbacks_list, shuffle=True)  # batch_size=8 , shuffle=True
-        model.save(arguments.saving_path + "/" + arguments.model_name + ".h5" )
+        model_architecture.save(arguments.saving_path + "/" + arguments.model_name + ".h5" )
 
     else:
         try:
-            model.load_weights(arguments.model_path)
+            model_architecture.load_weights(arguments.model_path)
         except:
             print("Problem loading the model which was provided with the model_path parameter")
 
@@ -388,9 +388,9 @@ if __name__ == "__main__":
 
     #Evaluation of the model
     if _2d:
-        print(model.evaluate(x=X_val2D, y=Y_val3D, batch_size=8))
+        print(model_architecture.evaluate(x=X_val2D, y=Y_val3D, batch_size=8))
 
-        prediction2D = model.predict(X_val2D, batch_size=8)
+        prediction2D = model_architecture.predict(X_val2D, batch_size=8)
         pred_2D = np.argmax(prediction2D, axis=1)
         Y_val2D = np.argmax(Y_val3D, axis=1)
 
@@ -399,9 +399,9 @@ if __name__ == "__main__":
         print(classification_report(Y_val2D, pred_2D))
 
     if _3d:
-        print(model.evaluate(x=X_val3D, y=Y_val3D, batch_size=8))
+        print(model_architecture.evaluate(x=X_val3D, y=Y_val3D, batch_size=8))
 
-        prediction3D = model.predict(X_val3D, batch_size=8)
+        prediction3D = model_architecture.predict(X_val3D, batch_size=8)
         pred_3D = np.argmax(prediction3D, axis=1)
         Y_val3D = np.argmax(Y_val3D, axis=1)
 
@@ -410,9 +410,9 @@ if __name__ == "__main__":
         print(classification_report(Y_val3D, pred_3D))
 
     if double:
-        print(model.evaluate(x=[X_val3D, X_val2D], y=Y_val3D, batch_size=1))
+        print(model_architecture.evaluate(x=[X_val3D, X_val2D], y=Y_val3D, batch_size=1))
 
-        prediction3D = model.predict([X_val3D, X_val2D], batch_size=1)
+        prediction3D = model_architecture.predict([X_val3D, X_val2D], batch_size=1)
         pred_3D = np.argmax(prediction3D, axis=1)
         Y_val3D = np.argmax(Y_val3D, axis=1)
 
@@ -427,18 +427,18 @@ if __name__ == "__main__":
         img3D = np.expand_dims(img3D, axis=0)
         img2D = np.expand_dims(img2D, axis=0)
 
-        print(str, np.argmax(model.predict([img3D, img2D])))
+        print(str, np.argmax(model_architecture.predict([img3D, img2D])))
 
 
 
-    # print(model.evaluate(x=[X_val3D, X_val2D], y=Y_val3D, batch_size=2))
-    # # print(model.evaluate(x=X_val2D, y=Y_val3D, batch_size=8))
+    # print(model_architecture.evaluate(x=[X_val3D, X_val2D], y=Y_val3D, batch_size=2))
+    # # print(model_architecture.evaluate(x=X_val2D, y=Y_val3D, batch_size=8))
     #
-    # # prediction2D = model.predict(X_val2D, batch_size=8)
+    # # prediction2D = model_architecture.predict(X_val2D, batch_size=8)
     # # pred_2D = np.argmax(prediction2D, axis=1)
     # # Y_val2D = np.argmax(Y_val3D, axis=1)
     #
-    # prediction3D = model.predict([X_val3D, X_val2D], batch_size=2)
+    # prediction3D = model_architecture.predict([X_val3D, X_val2D], batch_size=2)
     # pred_3D = np.argmax(prediction3D, axis=1)
     # Y_val3D = np.argmax(Y_val3D, axis=1)
     #
